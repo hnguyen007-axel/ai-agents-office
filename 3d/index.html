@@ -1,83 +1,57 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Agent Office — Isometric Edition</title><style>
-*{box-sizing:border-box}body{margin:0;background:#eaf2f8;color:#20374b;font:14px system-ui,-apple-system,sans-serif}header{background:#fff;border-bottom:1px solid #d4e3ee;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}h1{font-size:20px;margin:2px 0}small{color:#63829b}.pill{border-radius:30px;background:#e1f8f5;color:#117e79;padding:7px 12px;font-size:11px;font-weight:700}main{max-width:1300px;margin:auto;padding:14px;display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:14px}.card{background:#fff;border:1px solid #d3e3ed;border-radius:18px;box-shadow:0 6px 25px #183f6110;overflow:hidden}.toolbar{padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}button{border:1px solid #c2d8e8;background:#f2f8fc;color:#23506d;border-radius:10px;padding:9px 12px;font:inherit;font-weight:600;cursor:pointer;touch-action:manipulation}button:active{background:#d8edf7}.primary{background:#0c9eaa;color:white;border-color:#0c9eaa}svg{display:block;width:100%;height:auto;background:linear-gradient(135deg,#dcebf5,#b5d1e1);touch-action:pan-y}aside{display:grid;gap:14px;align-content:start}aside .card{padding:16px}h2{font-size:15px;margin:0 0 12px}.agent{width:100%;display:flex;justify-content:space-between;margin:6px 0;text-align:left}.selected{outline:2px solid #1aa9c2}.muted{color:#6b879c;line-height:1.5}.meter{height:8px;background:#dcebf3;border-radius:20px;overflow:hidden}.meter div{height:100%;background:#17adc1;width:0;transition:width .3s}#log{max-height:210px;overflow:auto;font-size:12px;line-height:1.8;color:#57748c}.worker{cursor:pointer;transition:filter .2s}.worker.active .halo{opacity:1}.halo{opacity:0;stroke:#00b7d1;stroke-width:4;fill:none;stroke-dasharray:8 5;animation:spin 8s linear infinite;transform-box:fill-box;transform-origin:center}@keyframes spin{to{stroke-dashoffset:-130}}.screenline{animation:blink 1.7s ease-in-out infinite alternate}@keyframes blink{to{opacity:.3}}.pulse{animation:pulse 2s ease-in-out infinite}@keyframes pulse{50%{opacity:.25}}.robot{animation:bob 2.8s ease-in-out infinite;transform-origin:center}@keyframes bob{50%{transform:translateY(-9px)}}.packet{offset-path:path('M440 345 Q510 275 610 294');animation:travel 3s linear infinite}@keyframes travel{to{offset-distance:100%}}footer{padding:8px 16px 24px;text-align:center;color:#668298;font-size:12px}@media(max-width:780px){main{grid-template-columns:1fr}aside{grid-template-columns:1fr 1fr}aside .card:last-child{grid-column:1/-1}}@media(max-width:440px){aside{grid-template-columns:1fr}aside .card:last-child{grid-column:auto}h1{font-size:17px}.toolbar button{padding:8px 10px;font-size:12px}}
-</style></head><body><header><div><small>AI OPERATIONS / VIRTUAL OFFICE</small><h1>Isometric Agent Command Centre</h1></div><span class="pill" id="state">● DEMO LIVE</span></header>
-<main><section class="card"><div class="toolbar"><button class="primary" id="pause">⏸ Pause</button><button id="task">⚡ Assign task</button><button id="zoomIn">＋ Zoom</button><button id="zoomOut">－ Zoom</button><button id="reset">↺ Reset</button><small>Tap a worker or screen</small></div>
-<svg viewBox="0 0 900 660" xmlns="http://www.w3.org/2000/svg" aria-label="Bright futuristic isometric office with AI workers, blue holographic screens and a central robot">
-<defs><linearGradient id="wall" x2="1" y2="1"><stop stop-color="#f9fdff"/><stop offset="1" stop-color="#dcebf3"/></linearGradient><linearGradient id="screen" x2="0" y2="1"><stop stop-color="#48b8ef"/><stop offset="1" stop-color="#0878b5"/></linearGradient><filter id="shadow"><feGaussianBlur stdDeviation="9"/></filter><pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#bed4df" stroke-width="1"/></pattern></defs>
-<g id="world">
-<!-- floating architectural platform -->
-<path d="M70 270L452 77L837 277L450 490Z" fill="#a9c5d5" opacity=".55" filter="url(#shadow)"/>
-<path d="M80 302L450 105L820 302L450 508Z" fill="#f5fafc" stroke="#aecad8" stroke-width="5"/>
-<path d="M80 302L450 508V548L80 342Z" fill="#9dbaca"/><path d="M450 508L820 302V341L450 548Z" fill="#7f9db0"/>
-<!-- rear walls -->
-<path d="M80 302V145L450 30V244Z" fill="url(#wall)" stroke="#c5dce8" stroke-width="5"/>
-<path d="M450 30L820 145V302L450 244Z" fill="#e8f3f9" stroke="#c5dce8" stroke-width="5"/>
-<path d="M80 145L450 30L820 145" fill="none" stroke="#fff" stroke-width="14"/>
-<!-- wall seams -->
-<g stroke="#cbdde7" fill="none" stroke-width="1.5"><path d="M110 151V290M165 132V275M225 114V256M288 94V238M352 72V220M510 52V259M585 77V282M655 100V297M740 124V306"/></g>
-<!-- floor tiles in perspective -->
-<g stroke="#c9dde7" stroke-width="1.4" opacity=".75">
-<path d="M126 327L496 125M178 354L548 152M230 383L600 180M283 412L652 209M337 442L705 237M392 475L758 265"/>
-<path d="M126 277L497 483M179 249L549 455M232 221L602 426M286 192L655 398M338 164L708 369M390 135L760 340"/>
-</g>
-<!-- giant holographic wall screens -->
-<path d="M160 171L338 110V245L160 306Z" fill="#d9f7ff" stroke="#7ec9e7" stroke-width="9"/>
-<path d="M169 176L330 123V239L169 292Z" fill="url(#screen)" stroke="#b0efff" stroke-width="3"/>
-<circle cx="248" cy="205" r="39" fill="none" stroke="#a4edff" stroke-width="3"/><circle cx="248" cy="205" r="25" fill="none" stroke="#c5f8ff" stroke-width="3" stroke-dasharray="7 7"/><circle cx="248" cy="205" r="11" fill="#b3f5ff" class="pulse"/>
-<g stroke="#b8f4ff" stroke-width="3" opacity=".9"><path d="M180 195l29-10M180 211l26-9M180 227l22-8M282 158l36-12M283 174l34-11M281 239l33-11"/></g>
-<path d="M515 116L749 190V324L515 248Z" fill="#d9f7ff" stroke="#7bc6e7" stroke-width="9"/>
-<path d="M524 127L739 195V312L524 243Z" fill="url(#screen)" stroke="#c4f5ff" stroke-width="3"/>
-<g fill="none" stroke="#b4f3ff" stroke-width="2"><path d="M544 154L604 173V224L544 205Z"/><path d="M618 177L717 209V255L618 224Z"/><path d="M543 215L601 234M618 238L714 270M618 251L680 273"/><circle cx="574" cy="190" r="12"/><path d="M634 217l20-12 15 18 20-9 20 21"/></g>
-<g class="screenline" fill="#b7f4ff"><rect x="634" y="194" width="55" height="4" rx="2" transform="rotate(17 634 194)"/><circle cx="703" cy="286" r="6"/></g>
-<!-- wall panels -->
-<path d="M383 95L430 80V146L383 162Z" fill="#fff" stroke="#a7ccdf" stroke-width="5"/><path d="M392 107L421 98V140L392 149Z" fill="#1598d5"/><circle cx="406" cy="121" r="9" fill="none" stroke="#c4faff" stroke-width="2"/>
-<!-- workstation furniture left -->
-<path d="M153 359L328 282L374 310L196 390Z" fill="#fff" stroke="#afc9d7" stroke-width="4"/>
-<path d="M172 371V425M354 317V371M204 385V435" stroke="#a1bfce" stroke-width="8"/>
-<path d="M231 336L292 310L324 327L260 354Z" fill="#1c789e"/><path d="M241 334L290 315L311 326L261 346Z" fill="#65d5f5"/>
-<!-- workstation right -->
-<path d="M520 355L686 282L741 310L572 390Z" fill="#fff" stroke="#afc9d7" stroke-width="4"/>
-<path d="M540 362V420M721 321V379M580 386V442" stroke="#9bbdcc" stroke-width="8"/>
-<path d="M604 332L666 305L697 323L635 352Z" fill="#176d9c"/><path d="M615 329L663 310L682 323L635 344Z" fill="#72dafa"/>
-<!-- plants and cabinets -->
-<path d="M115 341L145 327L169 339L139 355Z" fill="#eaf8fc" stroke="#afc9d7"/><path d="M125 347V381L139 388V355M139 388L161 375V347" fill="#f8fdff" stroke="#a8c7d6"/>
-<path d="M143 339q-25-32-11-40q12 9 11 40M143 339q25-37 29-22q-6 13-29 22M143 339q-7-48 8-45q7 15-8 45" fill="#6bb8a9" stroke="#398c82" stroke-width="2"/>
-<path d="M713 385L765 362L794 378L740 401Z" fill="#fff" stroke="#b1cbd8"/><path d="M740 401V459L794 434V378M713 385V442L740 459" fill="#e9f4fa" stroke="#aac8d8"/><path d="M749 415l34-16M749 438l34-16" stroke="#b5cedc" stroke-width="3"/>
-<!-- left worker chair and person -->
-<g class="worker" data-i="1"><ellipse class="halo" cx="297" cy="409" rx="60" ry="25"/>
-<path d="M282 372Q252 355 246 390L260 434Q290 453 319 426L315 390Z" fill="#3b576e"/><path d="M274 427L260 468M302 428L315 465" stroke="#35495c" stroke-width="10" stroke-linecap="round"/>
-<path d="M278 349Q295 335 314 353L324 391Q299 414 271 391Z" fill="#f9fbfc" stroke="#b9d5e1" stroke-width="3"/>
-<path d="M284 376L250 348M312 375L331 348" stroke="#f1b58d" stroke-width="10" stroke-linecap="round"/>
-<circle cx="297" cy="335" r="20" fill="#f4bb94"/><path d="M279 334Q277 309 297 312Q321 313 318 338L307 325L287 324Z" fill="#293b46"/>
-<circle cx="297" cy="335" r="25" fill="none" stroke="#00a9cc" stroke-width="3" opacity="0" class="selection"/>
-</g>
-<!-- right worker -->
-<g class="worker" data-i="2"><ellipse class="halo" cx="635" cy="408" rx="59" ry="25"/>
-<path d="M614 378Q584 357 581 399L600 441Q637 457 663 429L653 390Z" fill="#4a6375"/><path d="M615 431L602 470M645 432L656 469" stroke="#34495c" stroke-width="10" stroke-linecap="round"/>
-<path d="M619 351Q640 340 658 355L671 395Q642 416 611 392Z" fill="#eaf4fb" stroke="#b8d2df" stroke-width="3"/>
-<path d="M622 378L593 355M650 379L684 355" stroke="#e7aa84" stroke-width="10" stroke-linecap="round"/>
-<circle cx="638" cy="337" r="20" fill="#e8b08b"/><path d="M618 337Q616 312 639 314Q660 313 660 339L649 326L625 329Z" fill="#2b3c45"/>
-</g>
-<!-- standing analyst -->
-<g class="worker" data-i="3"><ellipse class="halo" cx="410" cy="477" rx="50" ry="20"/>
-<path d="M395 461L390 506M419 461L426 506" stroke="#334f64" stroke-width="11" stroke-linecap="round"/>
-<path d="M391 409Q408 400 427 414L431 469L390 471Z" fill="#f7fafc" stroke="#bed5e0" stroke-width="3"/>
-<path d="M392 427L378 460M427 429L440 455" stroke="#efb58f" stroke-width="9" stroke-linecap="round"/>
-<circle cx="409" cy="393" r="17" fill="#efb58f"/><path d="M393 391Q389 371 407 374Q426 374 425 391Z" fill="#3c3b3d"/>
-</g>
-<!-- coordinator hologram -->
-<g class="worker" data-i="0"><ellipse class="halo" cx="455" cy="345" rx="58" ry="26"/>
-<path d="M448 367L444 402M469 368L472 402" stroke="#8c9fab" stroke-width="8"/>
-<ellipse cx="459" cy="366" rx="31" ry="15" fill="#b9d2de"/>
-<path d="M436 315Q459 294 483 315L483 356Q459 376 436 356Z" fill="#fff" stroke="#9dbdcf" stroke-width="3"/>
-<circle cx="459" cy="297" r="23" fill="#f8fdff" stroke="#9dbdcf" stroke-width="3"/><path d="M443 290Q459 281 475 290V304Q459 314 443 304Z" fill="#163c5c"/><circle cx="452" cy="297" r="4" fill="#57edff" class="pulse"/><circle cx="467" cy="297" r="4" fill="#57edff" class="pulse"/>
-</g>
-<!-- monitor agent represented by diagnostics console -->
-<g class="worker" data-i="4"><ellipse class="halo" cx="741" cy="424" rx="54" ry="23"/>
-<path d="M710 385L751 368L786 386L746 405Z" fill="#fff" stroke="#b6d1df" stroke-width="3"/><path d="M713 385V425L746 443V405M746 443L786 423V386" fill="#dfeff7" stroke="#b6d1df" stroke-width="3"/><path d="M722 393L750 383L775 395L747 407Z" fill="#118ab9"/><path d="M735 396L750 391" stroke="#b8faff" stroke-width="3"/>
-</g>
-<!-- moving data signal -->
-<circle class="packet" r="8" fill="#20d9ef" stroke="#fff" stroke-width="3"/>
-</g></svg></section>
-<aside><section class="card"><h2>Agent overview</h2><p class="muted">4 active · 1 idle · Demo simulation</p><strong id="detailTitle">Coordinator</strong><p id="detail" class="muted"></p><div class="meter"><div id="progress"></div></div></section><section class="card"><h2>Select an agent</h2><div id="agents"></div></section><section class="card"><h2>Activity feed</h2><div id="log"></div></section></aside></main><footer>Illustrated isometric prototype inspired by your reference. Simulated events; not yet connected to live agents. The camera is fixed in this illustrated version.</footer>
-<script>(()=>{'use strict';const names=['Coordinator','Research','Developer','Data Analyst','Monitor'],tasks=['Delegating assignments','Analysing information','Building applications','Validating datasets','Monitoring services'],progress=[67,44,83,52,0];let selected=0,paused=false,count=0,zoom=1;const world=document.getElementById('world'),workers=[...document.querySelectorAll('.worker')];function select(i){selected=i;workers.forEach((w,j)=>w.classList.toggle('active',i===j));document.getElementById('detailTitle').textContent=names[i];document.getElementById('detail').textContent=tasks[i]+' · '+progress[i]+'%';document.getElementById('progress').style.width=progress[i]+'%';const list=document.getElementById('agents');list.replaceChildren();names.forEach((n,j)=>{let b=document.createElement('button');b.className='agent'+(i===j?' selected':'');b.textContent=n+' · '+(j===4?'Idle':'Running');b.onclick=()=>select(j);list.appendChild(b)})}function log(t){let e=document.createElement('div');e.textContent=new Date().toLocaleTimeString()+' · '+t;document.getElementById('log').prepend(e);while(document.getElementById('log').children.length>14)document.getElementById('log').lastChild.remove()}workers.forEach((w,i)=>w.addEventListener('click',()=>select(i)));function setZoom(z){zoom=Math.max(.8,Math.min(1.35,z));world.setAttribute('transform','translate('+(450*(1-zoom))+' '+(325*(1-zoom))+') scale('+zoom+')')}document.getElementById('zoomIn').onclick=()=>setZoom(zoom+.1);document.getElementById('zoomOut').onclick=()=>setZoom(zoom-.1);document.getElementById('reset').onclick=()=>setZoom(1);document.getElementById('task').onclick=()=>{let i=1+Math.floor(Math.random()*4);progress[i]=5;log('Coordinator assigned work to '+names[i]);select(i)};document.getElementById('pause').onclick=()=>{paused=!paused;document.getElementById('pause').textContent=paused?'▶ Resume':'⏸ Pause';document.getElementById('state').textContent=paused?'● PAUSED':'● DEMO LIVE';document.querySelectorAll('svg *').forEach(e=>e.style.animationPlayState=paused?'paused':'running')};setInterval(()=>{if(paused)return;count++;if(count%3===0){let i=Math.floor(Math.random()*4);progress[i]+=Math.ceil(Math.random()*8);if(progress[i]>=100){progress[i]=0;log(names[i]+' completed a task')}select(selected)}if(count%5===0)log(names[Math.floor(Math.random()*5)]+' sent a status update')},1200);select(0);log('Isometric virtual office ready')})();</script></body></html>
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Agent Office · 3D</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#e9f3f9;color:#173b55;font:14px system-ui,-apple-system,sans-serif}header{padding:13px 18px;background:white;border-bottom:1px solid #c9dfea;display:flex;justify-content:space-between;align-items:center}h1{font-size:19px;margin:2px 0}small{color:#7291a6}.tag{background:#dff8f3;color:#168775;border-radius:30px;padding:7px 10px;font-size:11px;font-weight:700}main{max-width:1450px;margin:auto;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) 295px;gap:12px}.card{background:white;border:1px solid #d2e3ec;border-radius:16px;overflow:hidden;box-shadow:0 5px 25px #2b587018}.bar{padding:10px;display:flex;gap:7px;flex-wrap:wrap}button{font:inherit;background:#edf7fc;border:1px solid #c4dce9;color:#205574;padding:9px 11px;border-radius:9px;cursor:pointer;touch-action:manipulation}button.primary{background:#168eaa;color:white;border-color:#168eaa}button.selected{outline:2px solid #0caac1}#viewport{position:relative;height:min(70vh,740px);min-height:420px;background:linear-gradient(#d9eef9,#edf7fb);touch-action:none}canvas{display:block;width:100%;height:100%}#hint{position:absolute;left:12px;bottom:12px;background:#ffffffdb;padding:8px 11px;border-radius:10px;color:#54798f;font-size:11px;pointer-events:none}aside{display:grid;gap:12px;align-content:start}aside section{padding:14px}h2{font-size:15px;margin:0 0 11px}.agent{width:100%;display:flex;justify-content:space-between;text-align:left;margin:6px 0}.muted{color:#64849b;line-height:1.5}.meter{height:8px;background:#deedf5;border-radius:10px;overflow:hidden}.meter div{height:100%;background:#11b3c5;width:0;transition:width .3s}#feed{max-height:210px;overflow:auto;font-size:12px;color:#54768c;line-height:1.75}#fallback{display:none;position:absolute;inset:0;align-items:center;justify-content:center;text-align:center;padding:30px;background:#e9f3f9}footer{text-align:center;color:#6b8799;font-size:12px;padding:12px}@media(max-width:790px){main{grid-template-columns:1fr}aside{grid-template-columns:1fr 1fr}aside section:last-child{grid-column:1/-1}#viewport{height:57vh;min-height:350px}}@media(max-width:460px){aside{grid-template-columns:1fr}aside section:last-child{grid-column:auto}h1{font-size:16px}#viewport{height:53vh;min-height:310px}}
+</style></head><body>
+<header><div><small>AI OPERATIONS / 3D VIRTUAL OFFICE</small><h1>Agent Command Centre</h1></div><span class="tag" id="state">● DEMO LIVE</span></header>
+<main><section class="card"><div class="bar"><button class="primary" id="pause">⏸ Pause</button><button id="task">⚡ Assign task</button><button id="home">⌂ Reset camera</button><button id="zoomIn">＋</button><button id="zoomOut">－</button></div><div id="viewport"><div id="fallback">Loading 3D environment…</div><div id="hint">Drag to orbit · Pinch to zoom · Tap an agent</div></div></section>
+<aside><section class="card"><h2>Selected agent</h2><strong id="agentTitle">Coordinator</strong><p class="muted" id="detail">Delegating work</p><div class="meter"><div id="progress"></div></div></section><section class="card"><h2>AI team</h2><div id="agents"></div></section><section class="card"><h2>Activity feed</h2><div id="feed"></div></section></aside></main>
+<footer>Real-time WebGL 3D prototype · Stylised procedural models · Simulated agent activity · No credentials or live agent connection</footer>
+<script type="module">
+import * as THREE from 'https://esm.sh/three@0.169.0';
+import {OrbitControls} from 'https://esm.sh/three@0.169.0/examples/jsm/controls/OrbitControls.js';
+const view=document.getElementById('viewport'),fallback=document.getElementById('fallback');
+let renderer;
+try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});}catch(e){fallback.style.display='flex';fallback.textContent='WebGL unavailable: '+e.message;throw e}
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;view.prepend(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color('#d8ebf5');scene.fog=new THREE.Fog('#d8ebf5',18,38);
+const camera=new THREE.PerspectiveCamera(39,1,.1,100);camera.position.set(10,9,12);const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,1.5,0);controls.enableDamping=true;controls.dampingFactor=.075;controls.minDistance=5;controls.maxDistance=22;controls.maxPolarAngle=Math.PI/2.06;controls.update();
+scene.add(new THREE.HemisphereLight(0xffffff,0x8daabd,2.3));const sun=new THREE.DirectionalLight(0xffffff,3.1);sun.position.set(-5,12,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=12;sun.shadow.camera.bottom=-12;sun.shadow.bias=-.0005;scene.add(sun);
+const mat=(color,roughness=.65,metalness=.05)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+const white=mat('#f8fdff'),wall=mat('#eaf4f9'),trim=mat('#c4dce8'),tile=mat('#f2f8fb'),steel=mat('#91acbd',.45,.4),chair=mat('#526a79'),dark=mat('#16394e'),blue=mat('#0889c2',.3,.2),glow=new THREE.MeshStandardMaterial({color:'#0ca5df',emissive:'#008fe0',emissiveIntensity:1.4,roughness:.25}),plant=mat('#4f9b87');
+function mesh(geo,m,parent=scene){const o=new THREE.Mesh(geo,m);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o}
+function box(w,h,d,m,x,y,z,parent=scene){let o=mesh(new THREE.BoxGeometry(w,h,d),m,parent);o.position.set(x,y,z);return o}
+function ball(r,m,x,y,z,parent=scene){let o=mesh(new THREE.SphereGeometry(r,20,14),m,parent);o.position.set(x,y,z);return o}
+function cyl(rt,rb,h,m,x,y,z,parent=scene){let o=mesh(new THREE.CylinderGeometry(rt,rb,h,16),m,parent);o.position.set(x,y,z);return o}
+box(11,.32,9,white,0,-.2,0);box(11,.1,.13,trim,0,0,4.44);box(.13,3.8,9,wall,-5.45,1.9,0);box(11,3.8,.13,wall,0,1.9,-4.44);
+for(let x=-5;x<=5;x+=.65){let l=box(.014,.008,8.9,trim,x,.008,0);l.castShadow=false}for(let z=-4;z<=4;z+=.65){let l=box(10.9,.008,.014,trim,0,.009,z);l.castShadow=false}
+for(let i=0;i<6;i++){box(.024,3.5,.025,trim,-5.35,1.9,-3.8+i*1.4);box(1.65,.024,.025,trim,-5.34,.8+i*.5,0)}
+// Illuminated holographic display panels on rear walls.
+function display(x,y,z,w,h,rotation){const g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotation;scene.add(g);box(w+.15,h+.15,.11,white,0,0,0,g);box(w,h,.12,glow,0,0,.09,g);for(let j=0;j<5;j++){let length=w*(.3+(j%3)*.13);box(length,.028,.013,white,-w*.4+length/2,h*.34-j*h*.15,.17,g)}let ring=new THREE.Mesh(new THREE.TorusGeometry(h*.18,.025,8,40),white);ring.position.set(w*.2,0,.18);g.add(ring);return g}
+display(-1.8,2.65,-4.25,3.4,1.55,0);display(2.25,2.6,-4.25,3.1,1.6,0);display(-5.28,2.65,-.65,2.6,1.5,Math.PI/2);
+// furniture
+function desk(x,z,rot=0){let g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rot;scene.add(g);box(2.05,.12,.95,white,0,1.13,0,g);for(let sx of [-.86,.86])for(let sz of [-.33,.33])box(.075,1.07,.075,steel,sx,.55,sz,g);box(.96,.65,.07,dark,0,1.68,-.28,g);box(.88,.56,.015,glow,0,1.69,-.235,g);box(.07,.4,.07,steel,0,1.35,-.29,g);box(.55,.035,.25,trim,0,1.22,.22,g);return g}
+function seat(x,z){cyl(.35,.33,.15,chair,x,.57,z);box(.64,.72,.12,chair,x,.99,z+.28);cyl(.055,.055,.53,steel,x,.28,z);for(let i=0;i<5;i++){let a=i*Math.PI*2/5;let leg=box(.5,.045,.045,steel,x+Math.cos(a)*.2,.1,z+Math.sin(a)*.2);leg.rotation.y=-a}}
+const people=[],agents=[
+{name:'Coordinator',task:'Delegating tasks',p:68,x:0,z:1.45,c:'#ffffff',robot:true},
+{name:'Research',task:'Researching opportunities',p:47,x:-2.8,z:-1.7,c:'#d4eaf8'},
+{name:'Developer',task:'Building applications',p:83,x:2.65,z:-1.7,c:'#d9f1f6'},
+{name:'Data Analyst',task:'Validating data',p:56,x:-2.8,z:2.0,c:'#e5ddf6'},
+{name:'Monitor',task:'Monitoring services',p:0,x:2.65,z:2.0,c:'#c6e4f5'}];
+function character(a,i){const g=new THREE.Group();g.position.set(a.x,0,a.z);scene.add(g);const outfit=mat(a.c);if(a.robot){cyl(.28,.38,.82,white,0,.75,0,g);ball(.31,white,0,1.37,0,g);box(.45,.18,.12,dark,0,1.4,.27,g);for(let s of [-.13,.13])ball(.045,glow,s,1.4,.345,g);for(let s of [-1,1]){cyl(.09,.1,.55,white,s*.4,.85,0,g);cyl(.12,.12,.25,steel,s*.18,.18,0,g)}}else{cyl(.32,.36,.72,outfit,0,.83,0,g);ball(.26,mat('#efc19f'),0,1.47,0,g);let hair=ball(.268,mat('#293e4c'),0,1.57,-.055,g);hair.scale.set(1,.45,1);for(let s of [-1,1]){cyl(.085,.09,.55,outfit,s*.4,.9,-.12,g);cyl(.11,.11,.55,dark,s*.17,.25,.05,g)}}g.userData.index=i;g.traverse(o=>o.userData.index=i);people.push(g);return g}
+agents.forEach((a,i)=>{if(i){desk(a.x,a.z-.68,i===3?.1:0);seat(a.x,a.z+.48)}character(a,i)});
+function cabinet(x,z){box(.75,1.05,.6,white,x,.53,z);for(let i=0;i<3;i++)box(.6,.025,.03,steel,x,.25+i*.28,z+.31)}
+cabinet(4.35,2.7);cabinet(-4.3,2.7);
+function potted(x,z){cyl(.25,.18,.42,white,x,.22,z);for(let i=0;i<7;i++){let a=i*Math.PI*2/7;let leaf=ball(.13,plant,x+Math.cos(a)*.19,.56+Math.sin(i)*.1,z+Math.sin(a)*.19);leaf.scale.set(.55,1.8,.6)}}potted(4.5,-3.4);potted(-4.3,3.25);potted(1,-3.8);
+// glowing selection ring
+const selectRing=new THREE.Mesh(new THREE.TorusGeometry(.63,.035,8,72),new THREE.MeshBasicMaterial({color:'#05bdd8'}));selectRing.rotation.x=-Math.PI/2;selectRing.position.y=.045;scene.add(selectRing);
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let selected=0,paused=false,tick=0,signals=[];
+function log(msg){const e=document.createElement('div');e.textContent=new Date().toLocaleTimeString()+' · '+msg;document.getElementById('feed').prepend(e);while(document.getElementById('feed').children.length>14)document.getElementById('feed').lastChild.remove()}
+function select(i){selected=i;let a=agents[i];selectRing.position.x=a.x;selectRing.position.z=a.z;document.getElementById('agentTitle').textContent=a.name;document.getElementById('detail').textContent=a.task+' · '+a.p+'%';document.getElementById('progress').style.width=a.p+'%';const list=document.getElementById('agents');list.replaceChildren();agents.forEach((v,j)=>{const b=document.createElement('button');b.className='agent'+(j===i?' selected':'');b.textContent=v.name+' · '+(j===4?'Idle':'Running');b.onclick=()=>select(j);list.appendChild(b)})}
+function signal(i,j){const s=ball(.085,glow,agents[i].x,2,agents[i].z);signals.push({mesh:s,from:i,to:j,t:0})}
+function assign(){let i=1+Math.floor(Math.random()*4);agents[i].p=5;agents[i].task='Processing assigned task';signal(0,i);log('Coordinator assigned a task to '+agents[i].name);select(i)}
+document.getElementById('task').onclick=assign;document.getElementById('pause').onclick=()=>{paused=!paused;document.getElementById('pause').textContent=paused?'▶ Resume':'⏸ Pause';document.getElementById('state').textContent=paused?'● PAUSED':'● DEMO LIVE'};document.getElementById('home').onclick=()=>{camera.position.set(10,9,12);controls.target.set(0,1.5,0);controls.update()};document.getElementById('zoomIn').onclick=()=>{camera.position.lerp(controls.target,.12)};document.getElementById('zoomOut').onclick=()=>{camera.position.sub(controls.target).multiplyScalar(1.12).add(controls.target)};
+let start=null;renderer.domElement.addEventListener('pointerdown',e=>start={x:e.clientX,y:e.clientY});renderer.domElement.addEventListener('pointerup',e=>{if(!start||Math.hypot(e.clientX-start.x,e.clientY-start.y)>8)return;const rect=renderer.domElement.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-((e.clientY-rect.top)/rect.height)*2+1);raycaster.setFromCamera(pointer,camera);let hits=raycaster.intersectObjects(people,true);if(hits.length){let o=hits[0].object;while(o&&!Number.isInteger(o.userData.index))o=o.parent;if(o)select(o.userData.index)}});
+function resize(){let w=view.clientWidth,h=view.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}new ResizeObserver(resize).observe(view);resize();select(0);log('WebGL office ready');
+function loop(){requestAnimationFrame(loop);if(!paused){tick++;people.forEach((p,i)=>{p.rotation.y=Math.sin(tick*.008+i)*.09;p.position.y=Math.sin(tick*.035+i)*.018});selectRing.material.opacity=.8;signals.forEach(s=>{s.t+=.012;let a=agents[s.from],b=agents[s.to],t=s.t;s.mesh.position.set(a.x+(b.x-a.x)*t,1.7+Math.sin(t*Math.PI)*1.6,a.z+(b.z-a.z)*t)});signals=signals.filter(s=>{if(s.t>=1){scene.remove(s.mesh);return false}return true});if(tick%230===0){let i=1+Math.floor(Math.random()*4);signal(i,0);log(agents[i].name+' sent an update')}if(tick%180===0){agents.slice(0,4).forEach(a=>{a.p+=Math.ceil(Math.random()*7);if(a.p>=100){a.p=0;log(a.name+' completed a task')}});select(selected)}}controls.update();renderer.render(scene,camera)}loop();
+</script></body></html>
