@@ -19,9 +19,9 @@ const SW=40,SH=56,SPRITE_STATES=['walk','idle','type','coffee','meeting','celebr
 const atlases=agents.map(a=>{
  const sheet=document.createElement('canvas');sheet.width=SW*4*8;sheet.height=SH*SPRITE_STATES.length;
  const g=sheet.getContext('2d');g.imageSmoothingEnabled=false;
- const px=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h)};
+ let ox=0,oy=0;const px=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(ox+x),Math.round(oy+y),w,h)};
  for(let state=0;state<SPRITE_STATES.length;state++)for(let dir=0;dir<8;dir++)for(let f=0;f<4;f++){
-  const ox=(dir*4+f)*SW,oy=state*SH,activity=SPRITE_STATES[state],walking=activity==='walk',seated=activity==='type';
+  ox=(dir*4+f)*SW;oy=state*SH;const activity=SPRITE_STATES[state],walking=activity==='walk',seated=activity==='type';
   const diagonal=dir%2===1,back=dir>=3&&dir<=5,side=dir===2||dir===6;
   const step=walking?[0,3,0,-3][f]:0,bodyY=walking&&f%2?-1:0;
   const torso=seated?25:27,bodyTop=seated?25:23+bodyY;
