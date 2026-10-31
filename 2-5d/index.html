@@ -3,20 +3,20 @@
 </style></head><body><header><div><small>AI STUDIO / ISOMETRIC MANAGEMENT SIM</small><h1>Pixel Agent Office</h1></div><span class="tag" id="state">● DEMO LIVE</span></header><main><section class="panel"><div class="toolbar"><button class="primary" id="pause">⏸ Pause</button><button id="task">✦ New task</button><button id="speed">⏩ 1×</button><button id="zoomIn">＋</button><button id="zoomOut">－</button><button id="reset">↺ View</button></div><div id="stage"><canvas id="game" width="800" height="600" aria-label="Animated isometric pixel art office with five AI agents"></canvas><div id="hint">Tap workers · Drag to pan · Pinch to zoom</div></div></section><aside><section class="panel"><h2>Studio dashboard</h2><div class="muted">🏢 AI Studio · Level 1<br>🟢 4 active agents · 1 idle<br>⭐ Tasks completed: <strong id="done">12</strong></div></section><section class="panel"><h2>Team roster</h2><div id="agents"></div></section><section class="panel"><h2 id="title">Coordinator</h2><p class="muted" id="detail"></p><div class="meter"><div id="progress"></div></div></section><section class="panel"><h2>Office events</h2><div id="feed"></div></section></aside></main><footer>Original isometric pixel-art demo · Simulated agents · No external libraries · Works on mobile browsers</footer><script>
 (()=>{'use strict';const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');if(!ctx)return;ctx.imageSmoothingEnabled=false;
 const C={outline:'#5b5664',floor:'#f1dcb8',tile:'#e8cfa9',wall:'#e5efe9',wallSide:'#b7d5cf',desk:'#b98a65',deskTop:'#e4b47b',monitor:'#6b7690',screen:'#54c9c2',chair:'#776e94',plant:'#6eaf6e'};
-const agents=[{name:'Coordinator',task:'Dispatching assignments',p:72,x:0,z:1.3,homeX:0,homeZ:1.3,shirt:'#f8e2b6',hair:'#66506c',mood:'✨',state:'active'},{name:'Research',task:'Investigating opportunities',p:44,x:-2.8,z:-1.45,homeX:-2.8,homeZ:-1.45,shirt:'#8fd2bc',hair:'#614b48',mood:'🔎',state:'active'},{name:'Developer',task:'Writing application code',p:82,x:2.8,z:-1.45,homeX:2.8,homeZ:-1.45,shirt:'#a4b8ed',hair:'#4e5268',mood:'💻',state:'active'},{name:'Data Analyst',task:'Checking data quality',p:55,x:-2.8,z:2.15,homeX:-2.8,homeZ:2.15,shirt:'#e7a5c6',hair:'#6a5355',mood:'📊',state:'active'},{name:'Monitor',task:'Watching system health',p:0,x:2.8,z:2.15,homeX:2.8,homeZ:2.15,shirt:'#eac17e',hair:'#564c44',mood:'💤',state:'idle'}];
+const agents=[{name:'Coordinator',task:'Dispatching assignments',p:72,x:0,z:3.2,homeX:0,homeZ:3.2,shirt:'#f8e2b6',hair:'#66506c',mood:'✨',state:'active'},{name:'Research',task:'Investigating opportunities',p:44,x:-4.5,z:-2.5,homeX:-4.5,homeZ:-2.5,shirt:'#8fd2bc',hair:'#614b48',mood:'🔎',state:'active'},{name:'Developer',task:'Writing application code',p:82,x:4.5,z:-2.5,homeX:4.5,homeZ:-2.5,shirt:'#a4b8ed',hair:'#4e5268',mood:'💻',state:'active'},{name:'Data Analyst',task:'Checking data quality',p:55,x:-4.5,z:2.6,homeX:-4.5,homeZ:2.6,shirt:'#e7a5c6',hair:'#6a5355',mood:'📊',state:'active'},{name:'Monitor',task:'Watching system health',p:0,x:4.5,z:2.6,homeX:4.5,homeZ:2.6,shirt:'#eac17e',hair:'#564c44',mood:'💤',state:'idle'}];
 let selected=0,paused=false,speed=1,done=12,frame=0,zoom=1,panX=0,panY=0,signals=[],clickAreas=[],drag=null,pinch=null;
 const W=800,H=600;
-function iso(x,z,y=0){return{x:400+panX+(x-z)*42*zoom,y:205+panY+(x+z)*23*zoom-y*42*zoom}}
+function iso(x,z,y=0){return{x:400+panX+(x-z)*29*zoom,y:205+panY+(x+z)*16*zoom-y*29*zoom}}
 function poly(pts,fill,stroke=C.outline,width=2){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.lineWidth=width*zoom;ctx.strokeStyle=stroke;ctx.stroke()}}
 function rect(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h))}
 function isoBox(x,z,y,w,d,h,top,left,right){let A=iso(x-w/2,z-d/2,y),B=iso(x+w/2,z-d/2,y),D=iso(x-w/2,z+d/2,y),E=iso(x+w/2,z+d/2,y),a=iso(x-w/2,z-d/2,y+h),b=iso(x+w/2,z-d/2,y+h),dd=iso(x-w/2,z+d/2,y+h),e=iso(x+w/2,z+d/2,y+h);poly([D,E,e,dd],left);poly([B,E,e,b],right);poly([a,b,e,dd],top);return iso(x,z,y+h)}
 function txt(t,x,y,size=13,color='#4e4554'){ctx.font='bold '+Math.max(8,Math.round(size*zoom))+'px monospace';ctx.textAlign='center';ctx.fillStyle='#fff7e6';ctx.fillText(t,x+2,y+2);ctx.fillStyle=color;ctx.fillText(t,x,y)}
 function desk(x,z){isoBox(x,z,0,1.85,.9,.82,'#f1bd7c','#bd875c','#aa7756');isoBox(x,z-.23,.83,.9,.12,.65,'#6f8797','#4c657a','#354c66');isoBox(x,z-.17,1.05,.75,.03,.37,frame%45<23?'#67ded0':'#39b2bc','#278ca6','#277f95');isoBox(x,z+.22,.86,.72,.36,.035,'#d9e2d8','#a9c3c1','#9cb3b2');isoBox(x,z+.68,0,.68,.6,.4,'#8f85a2','#665e83','#5d5575');isoBox(x,z+.91,.4,.67,.12,.65,'#827996','#6c6383','#625b7b')}
 function pot(x,z){isoBox(x,z,0,.5,.5,.45,'#f6f5e9','#b5d2cc','#a8c7c4');for(let i=0;i<5;i++){let p=iso(x+Math.cos(i*2.4)*.15,z+Math.sin(i*2.4)*.15,.65+Math.sin(i)*.12);rect(p.x-5*zoom,p.y-13*zoom,10*zoom,18*zoom,i%2?'#4d9b69':'#7bc284')}}
-function worker(a,i){let moving=!!a.walking,bob=paused?0:Math.sin(frame*(moving?.26:.11)+i)*(moving?.105:.045);let p=iso(a.x,a.z,.1+bob);let s=zoom;
+function worker(a,i){let moving=!!a.walking&&!a.dwellPhase,bob=paused?0:Math.sin(frame*(moving?.26:.11)+i)*(moving?.07:.018);let p=iso(a.x,a.z,.1+bob);let s=zoom;
 rect(p.x-12*s,p.y+2*s,24*s,6*s,'#b4a28e');
-let step=moving?Math.sin(frame*.29+i)*8*s:0;
-rect(p.x-9*s,p.y-1*s,7*s,12*s+step*.35,'#5c6982');rect(p.x+2*s,p.y-1*s,7*s,12*s-step*.35,'#5c6982');
+let step=moving?Math.sin(frame*.29+i)*7*s:0;
+rect(p.x-9*s,p.y-1*s+Math.max(0,step)*.45,7*s,12*s,'#5c6982');rect(p.x+2*s,p.y-1*s+Math.max(0,-step)*.45,7*s,12*s,'#5c6982');
 rect(p.x-10*s,p.y-25*s,20*s,25*s,a.shirt);
 rect(p.x-14*s,p.y-23*s+(moving?step*.45:0),5*s,17*s,a.shirt);
 rect(p.x+9*s,p.y-23*s-(moving?step*.45:0),5*s,17*s,a.shirt);
@@ -25,69 +25,118 @@ rect(p.x-5*s,p.y-28*s,3*s,3*s,'#544c5b');rect(p.x+3*s,p.y-28*s,3*s,3*s,'#544c5b'
 if(i===selected){ctx.strokeStyle='#f4b44c';ctx.lineWidth=3*s;ctx.strokeRect(p.x-16*s,p.y-43*s,32*s,57*s)}
 if(!paused&&frame%135<55){let q=iso(a.x,a.z,1.6);rect(q.x-17*s,q.y-25*s,34*s,22*s,'#fff8e6');rect(q.x-17*s,q.y-25*s,34*s,3*s,'#a69b89');txt(moving?'🚶':(a.activity==='coffee'?'☕':a.activity==='meeting'?'💬':a.activity==='celebrate'?'🎉':a.activity==='visit'?'👋':a.mood),q.x,q.y-8*s,15)}
 txt(a.name,p.x,p.y+26*s,11);clickAreas.push({i,x:p.x,y:p.y-20*s,r:32*s})}
-function floor(){isoBox(0,0,-.25,10.8,8.6,.22,'#f4e1bf','#c59e7d','#b88f70');for(let x=-5;x<5;x++)for(let z=-4;z<4;z++){let p=iso(x+.5,z+.5,-.015);poly([iso(x,z,-.01),iso(x+1,z,-.01),iso(x+1,z+1,-.01),iso(x,z+1,-.01)],(x+z)%2?'#f4dfbb':'#ecd3ad','#e1c5a2',.5)}}
+function floor(){isoBox(0,0,-.25,16.8,12.8,.22,'#f4e1bf','#c59e7d','#b88f70');for(let x=-8;x<8;x++)for(let z=-6;z<6;z++){let p=iso(x+.5,z+.5,-.015);poly([iso(x,z,-.01),iso(x+1,z,-.01),iso(x+1,z+1,-.01),iso(x,z+1,-.01)],(x+z)%2?'#f4dfbb':'#ecd3ad','#e1c5a2',.5)}}
 function wall(){// back walls with layered voxel panels
-for(let x=-5;x<5;x+=1){isoBox(x+.5,-4.32,0,1,.14,2.8,x%2?'#e5f0eb':'#eef7f1','#c3ddd7','#bad5d1')}
-for(let z=-4;z<4;z+=1){isoBox(-5.35,z+.5,0,.14,1,2.8,z%2?'#d9e9e4':'#e5f3ed','#bad3ce','#a9c9c5')}
+for(let x=-8;x<8;x+=1){isoBox(x+.5,-6.32,0,1,.14,2.8,x%2?'#e5f0eb':'#eef7f1','#c3ddd7','#bad5d1')}
+for(let z=-6;z<6;z+=1){isoBox(-8.35,z+.5,0,.14,1,2.8,z%2?'#d9e9e4':'#e5f3ed','#bad3ce','#a9c9c5')}
 }
 function screen(x,z,y,w=1.7){let p=iso(x,z,y);rect(p.x-w*20*zoom,p.y-25*zoom,w*40*zoom,50*zoom,'#3e7894');rect(p.x-w*17*zoom,p.y-22*zoom,w*34*zoom,43*zoom,'#2ca2c3');for(let i=0;i<4;i++)rect(p.x-w*13*zoom,p.y+(-15+i*10)*zoom,(20+i%2*16)*zoom,3*zoom,'#a5f8ed');rect(p.x+8*zoom,p.y-14*zoom,9*zoom,9*zoom,'#7be3e1')}
 function amenities(){
-  // Shared meeting table and chairs.
-  isoBox(.15,1.2,0,1.85,1.0,.65,'#e6b47a','#ae7c55','#9e704d');
-  for(const [x,z] of [[-1,1.2],[1.3,1.2],[.15,.25],[.15,2.15]])isoBox(x,z,0,.45,.48,.42,'#aaa1bc','#706b94','#696386');
-  let p=iso(.15,1.2,.72);txt('TEAM',p.x,p.y,10,'#72506c');
-  // Coffee counter in a rear corner.
-  isoBox(3.8,-2.9,0,1.5,.65,.9,'#fff1d8','#b9a6a0','#a98d82');
-  isoBox(3.8,-2.9,.92,.5,.42,.5,'#6c7891','#505c73','#424f68');
-  let c=iso(3.8,-2.9,1.55);txt('☕',c.x,c.y,21);
-  // A small celebratory stage / lounge.
-  isoBox(-.35,3.45,0,1.65,.8,.12,'#f3cf8d','#c89968','#b58b60');
+  // Central meeting zone with a clear perimeter walkway.
+  isoBox(0,0,0,2.25,1.45,.65,'#e6b47a','#ae7c55','#9e704d');
+  for(const [x,z] of [[-1.55,0],[1.55,0],[0,-1.25],[0,1.25]])isoBox(x,z,0,.5,.52,.42,'#aaa1bc','#706b94','#696386');
+  let p=iso(0,0,.72);txt('TEAM',p.x,p.y,11,'#72506c');
+  // Coffee station along the back wall.
+  isoBox(6.35,-4.7,0,1.6,.8,.9,'#fff1d8','#b9a6a0','#a98d82');
+  isoBox(6.35,-4.7,.92,.5,.42,.5,'#6c7891','#505c73','#424f68');
+  let c=iso(6.35,-4.7,1.55);txt('☕',c.x,c.y,21);
+  // Lounge and celebration corner.
+  isoBox(-.2,5.25,0,2.0,.85,.12,'#f3cf8d','#c89968','#b58b60');
 }
-function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#c8e0da';ctx.fillRect(0,0,W,H);ctx.fillStyle='#b8d6ce';for(let y=0;y<H;y+=36)for(let x=0;x<W;x+=36)if((x+y)%72===0)rect(x,y,18,18,'#c1dbd4');floor();wall();screen(-2.7,-4.1,1.8,2.5);screen(1.8,-4.1,1.8,2.3);pot(-4.45,-3.2);pot(4.6,-3.4);pot(-4.5,3.4);amenities();isoBox(4.35,3.3,0,1.1,.7,1.3,'#f4f0e4','#b9c7cb','#aabdc3');let all=agents.map((a,i)=>({a,i,depth:a.x+a.z})).sort((a,b)=>a.depth-b.depth);all.forEach(({a,i})=>{if(i!==0)desk(a.homeX,a.homeZ-.65);worker(a,i)});signals.forEach(s=>{let a=agents[s.from],b=agents[s.to],p=iso(a.x+(b.x-a.x)*s.t,a.z+(b.z-a.z)*s.t,1.7+Math.sin(s.t*Math.PI));rect(p.x-5*zoom,p.y-5*zoom,10*zoom,10*zoom,'#ffe36d')});let banner=iso(0,0,2.7);txt('★ AI STUDIO ★',banner.x,banner.y,21,'#715878')}
+function draw(){
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#c8e0da';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#b8d6ce';for(let y=0;y<H;y+=36)for(let x=0;x<W;x+=36)if((x+y)%72===0)rect(x,y,18,18,'#c1dbd4');
+  floor();wall();screen(-4.3,-6.1,1.8,2.5);screen(2.7,-6.1,1.8,2.3);
+  // Painter's order: sort all furniture and agents by ground depth.
+  let objects=[
+    {x:-7.25,z:-4.7,draw:()=>pot(-7.25,-4.7)},
+    {x:7.35,z:-5.55,draw:()=>pot(7.35,-5.55)},
+    {x:-7.3,z:5.35,draw:()=>pot(-7.3,5.35)},
+    {x:6.9,z:4.85,draw:()=>isoBox(6.9,4.85,0,1.1,.7,1.3,'#f4f0e4','#b9c7cb','#aabdc3')},
+    {x:0,z:0,draw:()=>amenities()}
+  ];
+  agents.forEach((a,i)=>{if(i!==0)objects.push({x:a.homeX,z:a.homeZ-.65,draw:()=>desk(a.homeX,a.homeZ-.65)});objects.push({x:a.x,z:a.z,draw:()=>worker(a,i)})});
+  objects.sort((a,b)=>(a.x+a.z)-(b.x+b.z)).forEach(o=>o.draw());
+  signals.forEach(s=>{let a=agents[s.from],b=agents[s.to],p=iso(a.x+(b.x-a.x)*s.t,a.z+(b.z-a.z)*s.t,1.7+Math.sin(s.t*Math.PI));rect(p.x-5*zoom,p.y-5*zoom,10*zoom,10*zoom,'#ffe36d')});
+  let banner=iso(0,-3.8,2.7);txt('★ AI STUDIO ★',banner.x,banner.y,21,'#715878')
+}
 function log(s){let e=document.createElement('div');e.textContent=new Date().toLocaleTimeString()+' · '+s;document.getElementById('feed').prepend(e);while(document.getElementById('feed').children.length>14)document.getElementById('feed').lastChild.remove()}
 function select(i){selected=i;let a=agents[i];document.getElementById('title').textContent=a.name;document.getElementById('detail').textContent=a.task+' · '+a.p+'%';document.getElementById('progress').style.width=a.p+'%';let list=document.getElementById('agents');list.replaceChildren();agents.forEach((a,j)=>{let b=document.createElement('button');b.className='agent'+(i===j?' selected':'');b.textContent=a.name+' · '+(j===4?'Idle':'Working');b.onclick=()=>select(j);list.appendChild(b)})}
 function assign(){let i=1+Math.floor(Math.random()*4);agents[i].p=5;agents[i].task='Processing new assignment';signals.push({from:0,to:i,t:0});log('Coordinator assigned work to '+agents[i].name);select(i)}
-const locations={meeting:[{x:-.9,z:.65},{x:1.15,z:.7},{x:-.7,z:2},{x:1.1,z:2}],coffee:[{x:3.15,z:-1.95},{x:4.25,z:-1.85}],celebrate:[{x:-1.25,z:3.1},{x:.55,z:3.25},{x:1.5,z:3.05}],visit:[]};
-let nextActivity=95,activitySerial=0,meetingCooldown=0;
-agents.forEach(a=>{a.activity='work';a.walking=false;a.dwell=0;a.returning=false;a.destination=null});
-function sendTo(i,activity,target,duration=95){let a=agents[i];if(a.walking||a.activity!=='work')return false;a.activity=activity;a.walking=true;a.returning=false;a.destination={x:target.x,z:target.z};a.dwell=duration;return true}
-function startActivity(){
-  const available=agents.map((a,i)=>i).filter(i=>aAvailable(i));if(!available.length)return;
-  const types=['coffee','visit','meeting','coffee','visit','celebrate'];const type=types[activitySerial++%types.length];
-  if(type==='meeting'&&available.length>=2&&frame>meetingCooldown){
-    let participants=available.slice(0,Math.min(3,available.length));
-    participants.forEach((i,j)=>sendTo(i,'meeting',locations.meeting[j],110));
-    log('📋 Team meeting: '+participants.map(i=>agents[i].name).join(', '));meetingCooldown=frame+550;return
+// A* grid routing: furniture footprints are blocked and diagonals cannot cut corners.
+const CELL=.5,MINX=-7.5,MAXX=7.5,MINZ=-5.5,MAXZ=5.5;
+const obstacles=[
+  ...agents.slice(1).map(a=>({x:a.homeX,z:a.homeZ-.65,w:2.25,d:1.4})),
+  {x:0,z:0,w:2.65,d:1.85},{x:6.35,z:-4.7,w:1.95,d:1.15},
+  {x:-.2,z:5.25,w:2.3,d:1.1},{x:6.9,z:4.85,w:1.4,d:1.0}
+];
+function blocked(x,z){if(x<MINX||x>MAXX||z<MINZ||z>MAXZ)return true;return obstacles.some(o=>Math.abs(x-o.x)<o.w/2+.18&&Math.abs(z-o.z)<o.d/2+.18)}
+function cell(x,z){return [Math.round(x/CELL),Math.round(z/CELL)]}
+function key(x,z){return x+','+z}
+function pathfind(from,to){
+  const [sx,sz]=cell(from.x,from.z),[tx,tz]=cell(to.x,to.z),start=key(sx,sz);
+  const open=[{x:sx,z:sz,g:0,f:0}],seen=new Map([[start,0]]),parents=new Map(),closed=new Set();
+  const dirs=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
+  let goal=null,iterations=0;
+  while(open.length&&iterations++<4500){open.sort((a,b)=>a.f-b.f);let n=open.shift(),k=key(n.x,n.z);if(closed.has(k))continue;closed.add(k);
+    if(n.x===tx&&n.z===tz){goal=k;break}
+    for(let [dx,dz] of dirs){let nx=n.x+dx,nz=n.z+dz,x=nx*CELL,z=nz*CELL;
+      if(blocked(x,z)||closed.has(key(nx,nz)))continue;
+      if(dx&&dz&&(blocked((n.x+dx)*CELL,n.z*CELL)||blocked(n.x*CELL,(n.z+dz)*CELL)))continue;
+      let g=n.g+(dx&&dz?1.414:1),nk=key(nx,nz);
+      if(g>=(seen.get(nk)??Infinity))continue;
+      seen.set(nk,g);parents.set(nk,k);
+      open.push({x:nx,z:nz,g,f:g+Math.hypot(tx-nx,tz-nz)})
+    }
   }
-  if(type==='celebrate'){
-    let participants=available.slice(0,Math.min(3,available.length));
-    participants.forEach((i,j)=>sendTo(i,'celebrate',locations.celebrate[j],85));
-    log('🎉 The team celebrates a milestone!');return
-  }
-  let i=available[Math.floor(Math.random()*available.length)],a=agents[i];
-  if(type==='coffee'){sendTo(i,'coffee',locations.coffee[i%2],90);log('☕ '+a.name+' is taking a coffee break')}
-  else {let j=(i+1+Math.floor(Math.random()*4))%5,target=agents[j];sendTo(i,'visit',{x:target.homeX+.65,z:target.homeZ+.65},85);log('👋 '+a.name+' is visiting '+target.name+"'s desk")}
+  if(!goal)return null;
+  let result=[];while(goal!==start){let [x,z]=goal.split(',').map(Number);result.unshift({x:x*CELL,z:z*CELL});goal=parents.get(goal);if(!goal)return null}
+  return result
+}
+const locations={
+  meeting:[{x:-1.9,z:-.9},{x:1.9,z:-.9},{x:-1.9,z:1.1},{x:1.9,z:1.1}],
+  coffee:[{x:5.25,z:-3.6},{x:6.7,z:-3.55}],
+  celebrate:[{x:-1.9,z:3.95},{x:.25,z:3.95},{x:1.85,z:4.05}]
+};
+let nextActivity=90,activitySerial=0,meetingCooldown=0;
+agents.forEach(a=>{a.activity='work';a.walking=false;a.dwell=0;a.returning=false;a.destination=null;a.path=[];a.dwellPhase=false;a.stepPhase=0});
+function sendTo(i,activity,target,duration=95){let a=agents[i];if(a.walking||a.activity!=='work'||blocked(target.x,target.z))return false;
+  let route=pathfind(a,target);if(!route)return false;
+  a.activity=activity;a.walking=true;a.returning=false;a.destination=target;a.path=route;a.dwell=duration;a.dwellPhase=false;return true
 }
 function aAvailable(i){return agents[i].activity==='work'&&!agents[i].walking}
+function startActivity(){
+  const available=agents.map((a,i)=>i).filter(aAvailable);if(!available.length)return;
+  const types=['coffee','visit','meeting','coffee','visit','celebrate'];const type=types[activitySerial++%types.length];
+  if(type==='meeting'&&available.length>=2&&frame>meetingCooldown){
+    let participants=available.slice(0,3),count=0;
+    participants.forEach((i,j)=>{if(sendTo(i,'meeting',locations.meeting[j],125))count++});
+    if(count)log('📋 Team meeting started with '+count+' agents');meetingCooldown=frame+580;return
+  }
+  if(type==='celebrate'){let count=0;available.slice(0,3).forEach((i,j)=>{if(sendTo(i,'celebrate',locations.celebrate[j],90))count++});if(count)log('🎉 '+count+' agents are gathering to celebrate');return}
+  let i=available[Math.floor(Math.random()*available.length)],a=agents[i];
+  if(type==='coffee'){if(sendTo(i,'coffee',locations.coffee[i%2],105))log('☕ '+a.name+' is walking to the coffee station')}
+  else{let j=(i+1+Math.floor(Math.random()*4))%5,target=agents[j];
+    let choices=[{x:target.homeX+1.35,z:target.homeZ+.8},{x:target.homeX-1.35,z:target.homeZ+.8},{x:target.homeX,z:target.homeZ+1.4}];
+    let spot=choices.find(p=>!blocked(p.x,p.z)&&pathfind(a,p));
+    if(spot&&sendTo(i,'visit',spot,90))log('👋 '+a.name+' is visiting '+target.name+"'s workstation")
+  }
+}
 function moveWorkers(dt){
-  agents.forEach((a,i)=>{
-    if(!a.walking)return;
-    if(a.dwellPhase){a.dwell-=dt;
-      if(a.dwell<=0){a.destination={x:a.homeX,z:a.homeZ};a.returning=true;a.dwellPhase=false}
-      return
+  agents.forEach(a=>{if(!a.walking)return;
+    if(a.dwellPhase){a.dwell-=dt;if(a.dwell<=0){let route=pathfind(a,{x:a.homeX,z:a.homeZ});if(route){a.path=route;a.returning=true;a.dwellPhase=false}else{a.dwell=35}}return}
+    let remaining=.035*dt;
+    while(remaining>0&&a.path.length){let p=a.path[0],dx=p.x-a.x,dz=p.z-a.z,d=Math.hypot(dx,dz);
+      if(d<=remaining){a.x=p.x;a.z=p.z;a.path.shift();remaining-=d}
+      else{a.x+=dx/d*remaining;a.z+=dz/d*remaining;remaining=0}
     }
-    let dx=a.destination.x-a.x,dz=a.destination.z-a.z,d=Math.hypot(dx,dz),step=.022*dt;
-    if(d<=step){a.x=a.destination.x;a.z=a.destination.z;
-      if(a.returning){a.walking=false;a.returning=false;a.activity='work';a.dwellPhase=false;log('💻 '+a.name+' returned to work')}
-      else {a.dwellPhase=true;log(a.activity==='meeting'?'💬 '+a.name+' joined the meeting':a.activity==='coffee'?'☕ '+a.name+' is enjoying coffee':a.activity==='celebrate'?'🎊 '+a.name+' is celebrating':'👋 '+a.name+' is chatting with a colleague')}
-    }else{a.x+=dx/d*step;a.z+=dz/d*step}
+    if(!a.path.length){
+      if(a.returning){a.walking=false;a.returning=false;a.activity='work';a.dwellPhase=false;log('💻 '+a.name+' returned to their desk')}
+      else{a.dwellPhase=true;log(a.activity==='meeting'?'💬 '+a.name+' joined the meeting':a.activity==='coffee'?'☕ '+a.name+' is enjoying coffee':a.activity==='celebrate'?'🎊 '+a.name+' is celebrating':'👋 '+a.name+' is chatting with a colleague')}
+    }
   })
 }
-function celebrateCompletion(name){
-  log('⭐ '+name+' completed a task!');
-  let available=agents.map((a,i)=>i).filter(i=>aAvailable(i)).slice(0,2);
-  available.forEach((i,j)=>sendTo(i,'celebrate',locations.celebrate[j],65))
-}
+function celebrateCompletion(name){log('⭐ '+name+' completed a task!');agents.map((a,i)=>i).filter(aAvailable).slice(0,2).forEach((i,j)=>sendTo(i,'celebrate',locations.celebrate[j],70))}
 function animate(){requestAnimationFrame(animate);
   if(!paused){let previous=frame;frame+=speed;moveWorkers(speed);
     if(frame>=nextActivity){startActivity();nextActivity=frame+155+Math.random()*125}
