@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agent Office — Pixel Studio</title><style>
-*{box-sizing:border-box}body{margin:0;background:#e9e4d9;color:#403d47;font:14px system-ui,-apple-system,sans-serif}header{padding:14px 18px;background:#fff8eb;border-bottom:3px solid #b6a990;display:flex;justify-content:space-between;align-items:center}h1{font-size:20px;margin:2px 0;color:#45405b}small{color:#837b79}.tag{background:#d9f4d5;border:2px solid #91bc85;color:#4e8851;padding:6px 9px;border-radius:7px;font-size:11px;font-weight:800}main{max-width:1250px;margin:auto;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:12px}.panel{background:#fffaf0;border:3px solid #a99c88;border-radius:9px;box-shadow:4px 5px 0 #c9bfae;overflow:hidden}.toolbar{padding:10px;display:flex;gap:7px;flex-wrap:wrap}button{font:inherit;font-weight:700;background:#f4e7cd;border:2px solid #b6a17e;border-radius:6px;padding:8px 10px;color:#514b50;cursor:pointer;touch-action:manipulation}button:active{transform:translateY(2px)}button.primary{background:#85c7b2;border-color:#508c81;color:#173e40}button.selected{background:#ffe29b;border-color:#c99142}#stage{width:100%;aspect-ratio:1.35;background:#c6e0dc;position:relative;touch-action:none;overflow:hidden}canvas{width:100%;height:100%;display:block;image-rendering:pixelated}#hint{position:absolute;left:10px;bottom:10px;background:#fff5dfdc;border:2px solid #b9aa8e;border-radius:6px;padding:6px 9px;font-size:11px;pointer-events:none}aside{display:grid;gap:12px;align-content:start}aside section{padding:13px}h2{font-size:15px;margin:0 0 10px;color:#60546c}.agent{display:flex;width:100%;justify-content:space-between;text-align:left;margin:5px 0}.meter{height:11px;border:2px solid #b2a690;background:#e9ddc7;border-radius:4px;overflow:hidden}.meter div{height:100%;width:0;background:#75bd9b;transition:width .3s}#feed{font-size:12px;line-height:1.8;max-height:210px;overflow:auto;color:#766d71}.muted{color:#807679;line-height:1.5}footer{text-align:center;color:#7f7470;padding:12px;font-size:12px}@media(max-width:780px){main{grid-template-columns:1fr}aside{grid-template-columns:1fr 1fr}aside section:last-child{grid-column:1/-1}}@media(max-width:460px){aside{grid-template-columns:1fr}aside section:last-child{grid-column:auto}h1{font-size:17px}#stage{aspect-ratio:1.05}.toolbar button{font-size:12px;padding:8px}}
+*{box-sizing:border-box}body{margin:0;background:#e9e4d9;color:#403d47;font:14px system-ui,-apple-system,sans-serif}header{padding:14px 18px;background:#fff8eb;border-bottom:3px solid #b6a990;display:flex;justify-content:space-between;align-items:center}h1{font-size:20px;margin:2px 0;color:#45405b}small{color:#837b79}.tag{background:#d9f4d5;border:2px solid #91bc85;color:#4e8851;padding:6px 9px;border-radius:7px;font-size:11px;font-weight:800}main{max-width:1250px;margin:auto;padding:12px;display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:12px}.panel{background:#fffaf0;border:3px solid #a99c88;border-radius:9px;box-shadow:4px 5px 0 #c9bfae;overflow:hidden}.toolbar{padding:10px;display:flex;gap:7px;flex-wrap:wrap}button{font:inherit;font-weight:700;background:#f4e7cd;border:2px solid #b6a17e;border-radius:6px;padding:8px 10px;color:#514b50;cursor:pointer;touch-action:manipulation}button:active{transform:translateY(2px)}button.primary{background:#85c7b2;border-color:#508c81;color:#173e40}button.selected{background:#ffe29b;border-color:#c99142}#stage{width:100%;aspect-ratio:1.35;background:#c6e0dc;position:relative;touch-action:none;overflow:hidden}canvas{width:100%;height:100%;display:block;image-rendering:pixelated}#hint{position:absolute;left:10px;bottom:10px;background:#fff5dfdc;border:2px solid #b9aa8e;border-radius:6px;padding:6px 9px;font-size:11px;pointer-events:none}aside{display:grid;gap:12px;align-content:start}aside section{padding:13px}h2{font-size:15px;margin:0 0 10px;color:#60546c}.agent{display:flex;width:100%;justify-content:space-between;text-align:left;margin:5px 0;gap:9px;align-items:flex-start}.agent-info{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}.agent-info strong{font-size:13px}.agent-description{font-size:11px;line-height:1.4;font-weight:400;color:#756d73}.agent-status{font-size:10px;white-space:nowrap;color:#568879}.meter{height:11px;border:2px solid #b2a690;background:#e9ddc7;border-radius:4px;overflow:hidden}.meter div{height:100%;width:0;background:#75bd9b;transition:width .3s}#feed{font-size:12px;line-height:1.8;max-height:210px;overflow:auto;color:#766d71}.muted{color:#807679;line-height:1.5}footer{text-align:center;color:#7f7470;padding:12px;font-size:12px}@media(max-width:780px){main{grid-template-columns:1fr}aside{grid-template-columns:1fr 1fr}aside section:last-child{grid-column:1/-1}}@media(max-width:460px){aside{grid-template-columns:1fr}aside section:last-child{grid-column:auto}h1{font-size:17px}#stage{aspect-ratio:1.05}.toolbar button{font-size:12px;padding:8px}}
 </style></head><body><header><div><small>AI STUDIO / ISOMETRIC MANAGEMENT SIM</small><h1>Pixel Agent Office</h1></div><span class="tag" id="state">● DEMO LIVE</span></header><main><section class="panel"><div class="toolbar"><button class="primary" id="pause">⏸ Pause</button><button id="task">✦ New task</button><button id="speed">⏩ 1×</button><button id="zoomIn">＋</button><button id="zoomOut">－</button><button id="reset">↺ View</button></div><div id="stage"><canvas id="game" width="800" height="600" aria-label="Animated isometric pixel art office with five AI agents"></canvas><div id="hint">Tap workers · Drag to pan · Pinch to zoom</div></div></section><aside><section class="panel"><h2>Studio dashboard</h2><div class="muted">🏢 AI Studio · Level 1<br>🟢 4 active agents · 1 idle<br>⭐ Tasks completed: <strong id="done">12</strong></div></section><section class="panel"><h2>Team roster</h2><div id="agents"></div></section><section class="panel"><h2 id="title">Coordinator</h2><p class="muted" id="detail"></p><div class="meter"><div id="progress"></div></div></section><section class="panel"><h2>Office events</h2><div id="feed"></div></section></aside></main><footer>Original isometric pixel-art demo · Simulated agents · No external libraries · Works on mobile browsers</footer><script>
 (()=>{'use strict';const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');if(!ctx)return;ctx.imageSmoothingEnabled=false;
 const C={outline:'#5b5664',floor:'#f1dcb8',tile:'#e8cfa9',wall:'#e5efe9',wallSide:'#b7d5cf',desk:'#b98a65',deskTop:'#e4b47b',monitor:'#6b7690',screen:'#54c9c2',chair:'#776e94',plant:'#6eaf6e'};
@@ -129,7 +129,34 @@ function draw(){
   let banner=iso(0,-3.8,2.7);txt('★ AI STUDIO ★',banner.x,banner.y,21,'#715878')
 }
 function log(s){let e=document.createElement('div');e.textContent=new Date().toLocaleTimeString()+' · '+s;document.getElementById('feed').prepend(e);while(document.getElementById('feed').children.length>14)document.getElementById('feed').lastChild.remove()}
-function select(i){selected=i;let a=agents[i];document.getElementById('title').textContent=a.name;document.getElementById('detail').textContent=a.task+' · '+a.p+'%';document.getElementById('progress').style.width=a.p+'%';let list=document.getElementById('agents');list.replaceChildren();agents.forEach((a,j)=>{let b=document.createElement('button');b.className='agent'+(i===j?' selected':'');b.textContent=a.name+' · '+(j===4?'Idle':'Working');b.onclick=()=>select(j);list.appendChild(b)})}
+const agentRoles=[
+  'Coordinates assignments, prioritises requests and delegates work to other agents.',
+  'Researches opportunities, compares sources and gathers useful findings.',
+  'Develops applications, writes code and improves automation workflows.',
+  'Checks datasets, validates results and prepares insights and reports.',
+  'Watches system health, tracks agent activity and flags issues.'
+];
+function activityDescription(a,i){
+  if(a.walking&&!a.dwellPhase)return a.returning?'Walking back to workstation':'Walking to '+({coffee:'coffee station',meeting:'team meeting',celebrate:'celebration area',visit:'a colleague'}[a.activity]||'destination');
+  if(a.activity==='coffee')return 'Taking a coffee break';
+  if(a.activity==='meeting')return 'Discussing tasks at the meeting table';
+  if(a.activity==='celebrate')return 'Celebrating a completed milestone';
+  if(a.activity==='visit')return 'Chatting at a colleague’s desk';
+  return i===4?'Monitoring services and waiting for alerts':a.task
+}
+function renderRoster(){
+ const list=document.getElementById('agents');list.replaceChildren();
+ agents.forEach((a,j)=>{
+  const b=document.createElement('button');b.className='agent'+(selected===j?' selected':'');
+  const info=document.createElement('span');info.className='agent-info';
+  const name=document.createElement('strong');name.textContent=a.name;
+  const desc=document.createElement('span');desc.className='agent-description';desc.textContent=activityDescription(a,j);
+  const role=document.createElement('span');role.className='agent-description';role.textContent=agentRoles[j];
+  const status=document.createElement('span');status.className='agent-status';status.textContent=a.walking?'● Moving':a.activity!=='work'?'● '+a.activity:'● '+(j===4?'Standby':'Working');
+  info.append(name,desc,role);b.append(info,status);b.onclick=()=>select(j);list.appendChild(b)
+ })
+}
+function select(i){selected=i;let a=agents[i];document.getElementById('title').textContent=a.name;document.getElementById('detail').textContent=activityDescription(a,i)+' · '+a.p+'%';document.getElementById('progress').style.width=a.p+'%';renderRoster()}
 function assign(){let i=1+Math.floor(Math.random()*4);agents[i].p=5;agents[i].task='Processing new assignment';signals.push({from:0,to:i,t:0});log('Coordinator assigned work to '+agents[i].name);select(i)}
 // A* grid routing: furniture footprints are blocked and diagonals cannot cut corners.
 const CELL=.5,MINX=-7.5,MAXX=7.5,MINZ=-5.5,MAXZ=5.5;
@@ -166,7 +193,7 @@ const locations={
   coffee:[{x:5.25,z:-3.6},{x:6.7,z:-3.55}],
   celebrate:[{x:-1.9,z:3.95},{x:.25,z:3.95},{x:1.85,z:4.05}]
 };
-let nextActivity=90,activitySerial=0,meetingCooldown=0;
+let nextActivity=90,activitySerial=0,meetingCooldown=0,lastRosterUpdate=-1;
 agents.forEach(a=>{a.activity='work';a.walking=false;a.dwell=0;a.returning=false;a.destination=null;a.path=[];a.dwellPhase=false;a.stepPhase=0;a.facing=0;a.facingAngle=0;a.walkCycle=0;a.wait=0});
 function sendTo(i,activity,target,duration=95){let a=agents[i];if(a.walking||a.activity!=='work'||blocked(target.x,target.z))return false;
   let route=pathfind(a,target);if(!route)return false;
@@ -248,7 +275,7 @@ function animate(){requestAnimationFrame(animate);
       });select(selected)
     }
   }
-  clickAreas=[];draw()
+  if(Math.floor(frame/30)!==lastRosterUpdate){lastRosterUpdate=Math.floor(frame/30);select(selected)}\n  clickAreas=[];draw()
 }
 function point(e){let r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*W/r.width,y:(e.clientY-r.top)*H/r.height}}
 canvas.addEventListener('pointerdown',e=>{let p=point(e);drag={x:p.x,y:p.y,px:panX,py:panY,moved:false};canvas.setPointerCapture(e.pointerId)});canvas.addEventListener('pointermove',e=>{if(!drag)return;let p=point(e),dx=p.x-drag.x,dy=p.y-drag.y;if(Math.hypot(dx,dy)>7)drag.moved=true;if(drag.moved){panX=drag.px+dx;panY=drag.py+dy}});canvas.addEventListener('pointerup',e=>{if(!drag)return;if(!drag.moved){let p=point(e);let hit=clickAreas.map(a=>({...a,d:Math.hypot(p.x-a.x,p.y-a.y)})).filter(a=>a.d<a.r).sort((a,b)=>a.d-b.d)[0];if(hit)select(hit.i)}drag=null});canvas.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY)},{passive:true});canvas.addEventListener('touchmove',e=>{if(e.touches.length===2&&pinch){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);zoom=Math.max(.65,Math.min(1.6,zoom*d/pinch));pinch=d}},{passive:true});canvas.addEventListener('touchend',()=>pinch=null);
